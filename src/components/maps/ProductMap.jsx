@@ -24,10 +24,29 @@ const defaultCenter = {
 const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 export function ProductMap({ searchResults = [] }) {
+  // Check if API key is valid (not placeholder)
+  const isValidApiKey = googleMapsApiKey && googleMapsApiKey !== 'YOUR_ACTUAL_API_KEY_HERE';
+
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: googleMapsApiKey,
+    googleMapsApiKey: isValidApiKey ? googleMapsApiKey : '',
     libraries,
+    preventGoogleFontsLoading: true, // Optimization
   });
+
+  // If API key is invalid, show a friendly fallback immediately
+  if (!isValidApiKey) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full h-[600px] bg-gray-100 dark:bg-gray-800 rounded-lg p-8 text-center">
+        <div className="bg-gray-200 dark:bg-gray-700 p-4 rounded-full mb-4">
+          <Loader2 className="h-8 w-8 text-gray-400" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">Map Unavailable</h3>
+        <p className="text-gray-500 dark:text-gray-400 max-w-md">
+          Map integration requires a valid Google Maps API Key. Please configure it in your environment variables.
+        </p>
+      </div>
+    );
+  }
 
   const [mapCenter, setMapCenter] = useState(defaultCenter);
   const [markers, setMarkers] = useState([]);

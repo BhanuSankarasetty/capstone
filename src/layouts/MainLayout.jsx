@@ -1,6 +1,7 @@
 // src/layouts/MainLayout.jsx - Professional E-commerce Header
 import React, { useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.png';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
 import {
@@ -13,14 +14,14 @@ import {
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
-import { 
-  User, 
-  Heart, 
-  Store, 
-  Shield, 
-  LogOut, 
-  ShoppingBag, 
-  Search, 
+import {
+  User,
+  Heart,
+  Store,
+  Shield,
+  LogOut,
+  ShoppingBag,
+  Search,
   Menu,
   X,
   MapPin,
@@ -43,36 +44,35 @@ const MainLayout = () => {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-white/95 dark:bg-gray-900/95 backdrop-blur-md supports-[backdrop-filter]:bg-white/80 dark:supports-[backdrop-filter]:bg-gray-900/80 shadow-sm">
+      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 shadow-sm">
         <nav className="container mx-auto px-4">
           {/* Top Bar */}
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2 group">
-              <div className="p-2 rounded-lg bg-gradient-primary group-hover:scale-110 transition-transform">
-                <ShoppingBag className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <span className="text-2xl font-poppins font-bold bg-gradient-primary bg-clip-text text-transparent">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="flex flex-col">
+                <span className="text-3xl font-poppins font-extrabold text-gradient-primary leading-none tracking-tight">
                   FYP
                 </span>
-                <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1">Find Your Product</p>
+                <span className="text-[0.65rem] text-muted-foreground font-medium tracking-wider leading-none">
+                  FIND YOUR PRODUCT
+                </span>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-6 flex-1 justify-center">
+            <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
               {navigation.map((item) => (
                 <NavLink
                   key={item.name}
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center gap-2 text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'text-fypBlue dark:text-fypBlue'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-fypBlue dark:hover:text-fypBlue'
+                    `flex items-center gap-2 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 ${isActive
+                      ? 'text-primary font-semibold'
+                      : 'text-muted-foreground hover:text-primary'
                     }`
                   }
                 >
@@ -85,16 +85,16 @@ const MainLayout = () => {
             {/* Right Side Actions */}
             <div className="hidden md:flex items-center gap-4">
               {/* Location */}
-              <button className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-fypBlue transition-colors">
+              <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors px-3 py-1.5 rounded-full hover:bg-accent/10">
                 <MapPin className="h-4 w-4" />
-                <span className="hidden lg:inline">Bangalore</span>
+                <span className="hidden lg:inline font-medium">Bangalore</span>
               </button>
 
               {/* Notifications */}
               {user && (
-                <button className="relative p-2 text-gray-700 dark:text-gray-300 hover:text-fypBlue transition-colors">
+                <button className="relative p-2 text-muted-foreground hover:text-primary transition-colors hover:bg-accent/10 rounded-full">
                   <Bell className="h-5 w-5" />
-                  <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+                  <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-destructive rounded-full ring-2 ring-background animate-pulse"></span>
                 </button>
               )}
 
@@ -102,10 +102,10 @@ const MainLayout = () => {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                      <Avatar className="h-9 w-9">
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full ring-2 ring-border hover:ring-primary transition-all">
+                      <Avatar className="h-10 w-10">
                         <AvatarImage src={user.avatar || "https://github.com/shadcn.png"} alt="@user" />
-                        <AvatarFallback className="bg-gradient-primary text-white">
+                        <AvatarFallback className="bg-gradient-primary text-white font-semibold">
                           {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                         </AvatarFallback>
                       </Avatar>
@@ -118,8 +118,8 @@ const MainLayout = () => {
                         <p className="text-xs leading-none text-muted-foreground">
                           {user.email}
                         </p>
-                        <p className="text-xs leading-none text-muted-foreground">
-                          Role: {user.role}
+                        <p className="text-xs leading-none text-muted-foreground bg-accent/10 px-2 py-0.5 rounded-full w-fit mt-1">
+                          {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                         </p>
                       </div>
                     </DropdownMenuLabel>
@@ -159,19 +159,19 @@ const MainLayout = () => {
                       )}
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600 dark:text-red-400">
+                    <DropdownMenuItem onClick={logout} className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                   <Link to="/login">
-                    <Button variant="ghost" size="sm">Log In</Button>
+                    <Button variant="ghost" size="sm" className="font-medium">Log In</Button>
                   </Link>
                   <Link to="/signup">
-                    <Button variant="fypPrimary" size="sm">Sign Up</Button>
+                    <Button variant="fypPrimary" size="sm" className="shadow-lg shadow-primary/25">Sign Up</Button>
                   </Link>
                 </div>
               )}
@@ -181,7 +181,7 @@ const MainLayout = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 text-gray-700 dark:text-gray-300"
+              className="md:hidden p-2 text-muted-foreground hover:text-primary transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -195,7 +195,7 @@ const MainLayout = () => {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="md:hidden border-t border-gray-200 dark:border-gray-800"
+                className="md:hidden border-t border-border"
               >
                 <div className="px-4 py-4 space-y-3">
                   {navigation.map((item) => (
@@ -203,21 +203,21 @@ const MainLayout = () => {
                       key={item.name}
                       to={item.path}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 text-gray-700 dark:text-gray-300 hover:text-fypBlue transition-colors"
+                      className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors p-2 rounded-md hover:bg-accent/10"
                     >
                       <item.icon className="h-5 w-5" />
                       {item.name}
                     </Link>
                   ))}
                   {!user && (
-                    <div className="pt-4 border-t border-gray-200 dark:border-gray-800 space-y-2">
+                    <div className="pt-4 border-t border-border space-y-3">
                       <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
                         <Button variant="ghost" className="w-full justify-start">
                           Log In
                         </Button>
                       </Link>
                       <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
-                        <Button variant="fypPrimary" className="w-full">
+                        <Button variant="fypPrimary" className="w-full shadow-md">
                           Sign Up
                         </Button>
                       </Link>

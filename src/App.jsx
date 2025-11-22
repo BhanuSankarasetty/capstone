@@ -17,6 +17,8 @@ import SignupPage from './pages/SignupPage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
 import VendorDetailsPage from './pages/VendorDetailsPage';
+import CategoriesPage from './pages/CategoriesPage';
+import VendorPage from './pages/VendorPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Protected Routes
@@ -49,6 +51,8 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="search" element={<SearchResultsPage />} />
           <Route path="product/:productId" element={<ProductDetailsPage />} />
+          <Route path="categories" element={<CategoriesPage />} />
+          <Route path="vendors" element={<VendorPage />} />
           <Route path="vendor/:vendorId" element={<VendorDetailsPage />} />
 
           {/* Authentication Routes */}

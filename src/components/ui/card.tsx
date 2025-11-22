@@ -2,12 +2,24 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Card({ className, ...props }: React.ComponentProps<"div">) {
+export interface CardProps extends React.ComponentProps<"div"> {
+  variant?: "default" | "glass" | "flat" | "elevated" | "outlined" | "filled"
+  interactive?: boolean
+}
+
+function Card({ className, variant = "default", interactive = false, ...props }: CardProps) {
   return (
     <div
       data-slot="card"
       className={cn(
-        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        "flex flex-col gap-6 rounded-xl transition-all duration-300",
+        variant === "default" && "bg-card text-card-foreground border shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-primary/20",
+        variant === "glass" && "glass text-foreground shadow-sm hover:shadow-lg hover:-translate-y-1",
+        variant === "flat" && "bg-secondary/5 border border-transparent hover:bg-secondary/10",
+        variant === "elevated" && "bg-card text-card-foreground border-0 shadow-premium hover:shadow-premium-hover hover:-translate-y-2",
+        variant === "outlined" && "bg-transparent border-2 border-border hover:border-primary hover:shadow-md",
+        variant === "filled" && "bg-primary/5 border border-primary/10 hover:bg-primary/10 hover:border-primary/20",
+        interactive && "cursor-pointer hover:shadow-primary/20 active:scale-[0.98]",
         className
       )}
       {...props}
@@ -32,7 +44,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-title"
-      className={cn("leading-none font-semibold", className)}
+      className={cn("leading-none font-semibold tracking-tight", className)}
       {...props}
     />
   )

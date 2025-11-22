@@ -7,10 +7,14 @@
  * @returns {string} Formatted price string
  */
 export const formatPrice = (price, showSymbol = true) => {
+  if (price === undefined || price === null || isNaN(price)) {
+    return showSymbol ? '₹0.00' : '0.00';
+  }
+
   // Convert USD to INR (approximate rate: 1 USD = 83 INR)
   const exchangeRate = 83;
   const inrPrice = price * exchangeRate;
-  
+
   // Format with Indian number system (lakhs, crores)
   const formatted = new Intl.NumberFormat('en-IN', {
     style: showSymbol ? 'currency' : 'decimal',
@@ -18,7 +22,7 @@ export const formatPrice = (price, showSymbol = true) => {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   }).format(inrPrice);
-  
+
   return formatted;
 };
 

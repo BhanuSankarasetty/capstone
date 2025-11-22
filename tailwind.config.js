@@ -14,6 +14,10 @@ export default {
       },
     },
     extend: {
+      fontSize: {
+        xs: '0.9rem',
+        sm: '1rem',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -48,6 +52,8 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        fypBlue: "hsl(var(--primary))",
+        fypGreen: "hsl(var(--secondary))",
       },
       borderRadius: {
         lg: "var(--radius)",

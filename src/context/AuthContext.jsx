@@ -16,9 +16,11 @@ export const AuthProvider = ({ children }) => {
   // Function to check auth status on app load/refresh
   const checkAuthStatus = async () => {
     try {
-      // Endpoint to verify token and return user data
-      const response = await axios.get('/auth/me');
-      setUser(response.data.user);
+      // Mock: Check localStorage for user
+      const storedUser = localStorage.getItem('fyp_user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
     } catch (error) {
       console.error("Auth check failed:", error);
       setUser(null);
@@ -34,14 +36,45 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       setIsLoading(true);
-      const response = await axios.post('/auth/login', credentials);
-      // Backend should set an httpOnly cookie with JWT
-      setUser(response.data.user);
-      toast.success('Logged in successfully!');
-      navigate('/'); // Redirect to home or dashboard
-      return response.data.user;
+
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Mock Admin Login
+      if (credentials.email === 'admin' && credentials.password === 'admin') {
+        const adminUser = {
+          id: 'admin-123',
+          name: 'Admin User',
+          email: 'admin@fyp.com',
+          role: 'admin',
+          avatar: 'https://github.com/shadcn.png'
+        };
+        localStorage.setItem('fyp_user', JSON.stringify(adminUser));
+        setUser(adminUser);
+        toast.success('Logged in as Admin!');
+        navigate('/admin');
+        return adminUser;
+      }
+
+      // Mock User/Vendor Login
+      // For demo purposes, we'll just create a user based on email if not admin
+      // In a real mock, we might check against a list of registered users in localStorage
+      const mockUser = {
+        id: 'user-' + Date.now(),
+        name: credentials.email.split('@')[0],
+        email: credentials.email,
+        role: 'user', // Default to user, or could be 'vendor' based on email pattern
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${credentials.email}`
+      };
+
+      localStorage.setItem('fyp_user', JSON.stringify(mockUser));
+      setUser(mockUser);
+      toast.success('Logged in successfully! (Mock)');
+      navigate('/');
+      return mockUser;
+
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Login failed.');
+      toast.error('Login failed.');
       throw error;
     } finally {
       setIsLoading(false);
@@ -50,26 +83,44 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post('/auth/logout'); // Endpoint to clear httpOnly cookie on backend
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      localStorage.removeItem('fyp_user');
       setUser(null);
-      queryClient.clear(); // Clear all React Query cache
+      queryClient.clear();
       toast.success('Logged out successfully!');
       navigate('/login');
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Logout failed.');
+      toast.error('Logout failed.');
     }
   };
 
   const signup = async (userData) => {
     try {
       setIsLoading(true);
-      const response = await axios.post('/auth/register', userData);
-      // For signup, we might auto-login or redirect to login page
-      toast.success('Account created successfully! Please log in.');
-      navigate('/login');
-      return response.data;
+
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const newUser = {
+        id: 'user-' + Date.now(),
+        name: userData.name,
+        email: userData.email,
+        role: userData.role || 'user',
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.email}`
+      };
+
+      // In a real app, we'd save this to a database. 
+      // Here we just log them in immediately for convenience.
+      localStorage.setItem('fyp_user', JSON.stringify(newUser));
+      setUser(newUser);
+
+      toast.success('Account created successfully! (Mock)');
+      navigate('/');
+      return newUser;
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Signup failed.');
+      toast.error('Signup failed.');
       throw error;
     } finally {
       setIsLoading(false);

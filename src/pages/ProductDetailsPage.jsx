@@ -21,7 +21,7 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     setLoading(true);
     const foundProduct = getProductById(productId);
-    
+
     if (foundProduct) {
       setProductDetails(foundProduct);
       const vendors = getVendorsForProduct(productId);
@@ -75,219 +75,199 @@ const ProductDetailsPage = () => {
   }));
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="space-y-8"
+        className="space-y-10"
       >
         {/* Back Button */}
-        <Link to="/search">
-          <Button variant="ghost" className="mb-4">
-            <ArrowLeft className="h-4 w-4 mr-2" />
+        <Link to="/search" className="inline-block">
+          <Button variant="ghost" className="hover:bg-transparent hover:text-primary pl-0 text-lg">
+            <ArrowLeft className="h-5 w-5 mr-2" />
             Back to Search
           </Button>
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Image and Basic Info */}
-          <Card className="p-6 dark:bg-gray-800 shadow-xl border-2 hover:border-fypBlue/50 transition-colors">
+          <div className="space-y-8">
             <motion.div
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2 }}
+              className="relative group"
             >
-              <div className="relative w-full h-96 mb-6 rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-3xl blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative w-full aspect-square rounded-3xl overflow-hidden bg-white dark:bg-gray-800 shadow-2xl border border-white/20">
                 <img
                   src={productDetails.imageUrl || 'https://via.placeholder.com/600x400?text=Product+Image'}
                   alt={productDetails.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                 />
               </div>
             </motion.div>
-            
-            <CardTitle className="text-4xl font-poppins font-bold text-gradient-primary bg-clip-text text-transparent mb-4">
-              {productDetails.name}
-            </CardTitle>
-            
-            <div className="space-y-3 mb-6">
-              <div className="flex items-center gap-2">
-                <span className="text-gray-600 dark:text-gray-400">Brand:</span>
-                <span className="font-semibold text-gray-900 dark:text-white">{productDetails.brand}</span>
+
+            <div className="space-y-6">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-semibold">
+                    {productDetails.category}
+                  </span>
+                  {productDetails.tags?.includes('organic') && (
+                    <span className="px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-sm font-semibold flex items-center gap-1">
+                      <CheckCircle2 className="h-3 w-3" /> Organic
+                    </span>
+                  )}
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
+                  {productDetails.name}
+                </h1>
+                <p className="text-xl text-gray-500 dark:text-gray-400 mt-2 font-medium">
+                  by {productDetails.brand}
+                </p>
               </div>
-              <div className="flex items-center gap-2">
-                <Tag className="h-4 w-4 text-fypBlue" />
-                <span className="text-gray-600 dark:text-gray-400">Category:</span>
-                <span className="font-semibold text-gray-900 dark:text-white">{productDetails.category}</span>
+
+              <Separator />
+
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">About this item</h3>
+                <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                  {productDetails.description}
+                </p>
               </div>
-            </div>
 
-            <Separator className="my-6" />
-
-            <div>
-              <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Description</h3>
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                {productDetails.description}
-              </p>
-            </div>
-
-            {productDetails.tags && productDetails.tags.length > 0 && (
-              <div className="mt-6">
-                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Tags</h3>
+              {productDetails.tags && productDetails.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {productDetails.tags.map((tag, idx) => (
                     <span
                       key={idx}
-                      className="px-3 py-1 rounded-full bg-fypBlue/10 text-fypBlue text-sm font-medium"
+                      className="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-sm font-medium border border-gray-200 dark:border-gray-700"
                     >
-                      {tag}
+                      #{tag}
                     </span>
                   ))}
                 </div>
-              </div>
-            )}
-          </Card>
+              )}
+            </div>
+          </div>
 
           {/* Vendors Selling This Product & Price Comparison */}
-          <Card className="p-6 dark:bg-gray-800 shadow-xl border-2">
-            <CardTitle className="text-3xl font-poppins font-bold text-gray-900 dark:text-white mb-6">
-              Available Vendors
-            </CardTitle>
-            
-            {sellingVendors.length > 0 ? (
-              <>
-                {/* Price Range Info */}
-                <div className="mb-6 p-4 rounded-lg bg-gradient-primary text-white">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm opacity-90">Price Range</p>
-                      <p className="text-2xl font-bold">
-                        {formatPrice(lowestPrice)} - {formatPrice(highestPrice)}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm opacity-90">Best Price</p>
-                      <p className="text-2xl font-bold">{formatPrice(lowestPrice)}</p>
+          <div className="space-y-8">
+            <Card className="p-8 dark:bg-gray-800 shadow-xl border-0 ring-1 ring-gray-200 dark:ring-gray-700 bg-white/50 backdrop-blur-sm">
+              <CardHeader className="px-0 pt-0">
+                <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <TrendingUp className="h-6 w-6 text-green-500" />
+                  Available Offers
+                </CardTitle>
+              </CardHeader>
+
+              {sellingVendors.length > 0 ? (
+                <>
+                  {/* Price Range Info */}
+                  <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 text-white shadow-lg relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl" />
+                    <div className="relative z-10 flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-400 text-sm font-medium mb-1">Best Price</p>
+                        <p className="text-4xl font-bold text-green-400">{formatPrice(lowestPrice)}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-gray-400 text-sm font-medium mb-1">Highest</p>
+                        <p className="text-2xl font-semibold text-white/80">{formatPrice(highestPrice)}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="space-y-4 max-h-96 overflow-y-auto">
-                  {sortedVendors.map((vendor, idx) => {
-                    const isLowestPrice = vendor.productPrice === lowestPrice;
-                    return (
-                      <motion.div
-                        key={vendor.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.1 }}
-                      >
-                        <Card className={`p-4 border-2 transition-all ${
-                          isLowestPrice 
-                            ? 'border-fypGreen bg-fypGreen/5' 
-                            : 'border-gray-200 dark:border-gray-700 hover:border-fypBlue/50'
-                        } dark:bg-gray-700/50`}>
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex-1">
-                              <Link to={`/vendor/${vendor.id}`}>
-                                <h4 className="text-lg font-semibold text-fypBlue hover:underline mb-1">
-                                  {vendor.name}
-                                </h4>
-                              </Link>
-                              <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
-                                <div className="flex items-center gap-1">
-                                  <MapPin className="h-3 w-3" />
-                                  <span>{vendor.distance} km</span>
+                  <div className="space-y-4">
+                    {sortedVendors.map((vendor, idx) => {
+                      const isLowestPrice = vendor.productPrice === lowestPrice;
+                      return (
+                        <motion.div
+                          key={vendor.id}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.1 }}
+                        >
+                          <div className={`group p-5 rounded-xl border transition-all duration-300 ${isLowestPrice
+                            ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-900/30 hover:shadow-md'
+                            : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md'
+                            }`}>
+                            <div className="flex items-center justify-between mb-4">
+                              <div>
+                                <Link to={`/vendor/${vendor.id}`} className="flex items-center gap-2 group-hover:text-blue-600 transition-colors">
+                                  <h4 className="text-lg font-bold text-gray-900 dark:text-white">
+                                    {vendor.name}
+                                  </h4>
+                                  <ExternalLink className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </Link>
+                                <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
+                                  <span className="flex items-center gap-1">
+                                    <MapPin className="h-3 w-3" /> {vendor.distance} km
+                                  </span>
+                                  {vendor.rating && (
+                                    <span className="flex items-center gap-1 text-amber-500 font-medium">
+                                      <Star className="h-3 w-3 fill-current" /> {vendor.rating}
+                                    </span>
+                                  )}
                                 </div>
-                                {vendor.rating && (
-                                  <div className="flex items-center gap-1">
-                                    <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                                    <span>{vendor.rating}</span>
-                                  </div>
-                                )}
-                                {vendor.isVerified && (
-                                  <span className="px-2 py-0.5 rounded-full bg-fypGreen/10 text-fypGreen text-xs font-medium">
-                                    Verified
-                                  </span>
-                                )}
                               </div>
-                            </div>
-                            <div className="text-right">
-                              <div className="flex items-center gap-2">
-                                {isLowestPrice && (
-                                  <span className="px-2 py-1 rounded-md bg-fypGreen text-white text-xs font-bold">
-                                    Best Price
-                                  </span>
-                                )}
-                                <span className="text-2xl font-bold text-fypBlue">
+                              <div className="text-right">
+                                <span className="text-2xl font-bold text-gray-900 dark:text-white block">
                                   {formatPrice(vendor.productPrice)}
                                 </span>
+                                {isLowestPrice && (
+                                  <span className="text-xs font-bold text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
+                                    Best Deal
+                                  </span>
+                                )}
                               </div>
                             </div>
-                          </div>
-                          
-                          <div className="flex items-center justify-between">
-                            <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-                              vendor.productStock === 'Available' 
-                                ? 'bg-fypGreen/10 text-fypGreen border-fypGreen/20' 
-                                : vendor.productStock === 'Low'
-                                ? 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20'
-                                : 'bg-red-500/10 text-red-500 border-red-500/20'
-                            }`}>
-                              {vendor.productStock}
-                            </span>
-                            <div className="flex gap-2">
-                              <Button variant="outline" size="sm" asChild>
-                                <Link to={`/vendor/${vendor.id}`}>
-                                  <ExternalLink className="h-4 w-4 mr-1" />
-                                  Visit Shop
-                                </Link>
-                              </Button>
-                              <Button variant="fypPrimary" size="sm" asChild>
-                                <a
-                                  href={`https://www.google.com/maps/dir/?api=1&destination=${vendor.latitude},${vendor.longitude}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  <MapPin className="h-4 w-4 mr-1" />
-                                  Directions
-                                </a>
-                              </Button>
+
+                            <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+                              <span className={`text-sm font-medium ${vendor.productStock === 'Available' ? 'text-green-600' : 'text-red-500'
+                                }`}>
+                                {vendor.productStock}
+                                {vendor.productStock === 'Available' && <span className="text-gray-400 font-normal ml-1">({vendor.productStockCount} left)</span>}
+                              </span>
+                              <a
+                                href={`https://www.google.com/maps/dir/?api=1&destination=${vendor.latitude},${vendor.longitude}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Button size="sm" className="rounded-full px-6">
+                                  Get Directions
+                                </Button>
+                              </a>
                             </div>
                           </div>
-                        </Card>
-                      </motion.div>
-                    );
-                  })}
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <XCircle className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">No vendors available</h3>
+                  <p className="text-gray-500">Check back later for stock updates.</p>
                 </div>
-              </>
-            ) : (
-              <p className="text-center text-gray-600 dark:text-gray-400 py-8">
-                No vendors currently selling this product.
-              </p>
-            )}
-          </Card>
-        </div>
-
-        {/* Map View of all Vendors for this product */}
-        {sellingVendors.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="mt-8"
-          >
-            <Card className="p-6 dark:bg-gray-800 shadow-xl border-2">
-              <CardTitle className="text-3xl font-poppins font-bold text-gray-900 dark:text-white mb-6">
-                Vendors on Map
-              </CardTitle>
-              <div className="h-[500px] rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700">
-                <ProductMap searchResults={mapResults} />
-              </div>
+              )}
             </Card>
-          </motion.div>
-        )}
+
+            {/* Map View */}
+            {sellingVendors.length > 0 && (
+              <Card className="p-1 overflow-hidden border-0 shadow-xl ring-1 ring-gray-200 dark:ring-gray-700">
+                <div className="h-[400px] w-full rounded-lg overflow-hidden">
+                  <ProductMap searchResults={mapResults} />
+                </div>
+              </Card>
+            )}
+          </div>
+        </div>
       </motion.div>
     </div>
   );
